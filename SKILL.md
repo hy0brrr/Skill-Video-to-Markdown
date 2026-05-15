@@ -144,7 +144,7 @@ with open("<video_dir>/clip.json", "w") as f:
 
 **4e. 生成 Markdown**
 
-调用 `generate_markdown.py`（路径：`/Users/huanyun.wang/Desktop/有用资料/游戏项目组资料/generate_markdown.py`），设置以下环境变量后执行：
+调用 `generate_markdown.py`（与 `SKILL.md` 同级目录，或通过环境变量 `GENERATE_MD_SCRIPT` 指定绝对路径），设置以下环境变量后执行：
 
 ```bash
 TRANSCRIPT_JSON=<video_dir>/clip.json \
@@ -156,7 +156,7 @@ python3 generate_markdown.py
 
 `generate_markdown.py` 会自动处理以下逻辑：
 - **语言统一**：非中文内容翻译为简体中文，繁体转简体
-- **纠错**：结合游戏行业/米哈游背景纠正同音字和专有名词识别错误；如同级目录有 `info.json`，自动读取课程标题作为额外上下文
+- **纠错**：结合视频所在行业背景纠正同音字和专有名词识别错误；如同级目录有 `info.json`，自动读取课程标题作为额外上下文
 - **视频类型检测**：场景变化 > 10次/分钟判定为动画/录屏类，自动省略截图嵌入
 - **图片结构**：每个语义段落的所有幻灯片统一展示在文字下方，不插入文字中间
 - **讲师识别**：从自我介绍中提取项目组/岗位，写在文档顶部；检测到多位讲师时自动标注
@@ -171,7 +171,7 @@ python3 generate_markdown.py
 
 - whisperX 转录是最耗时的步骤，CPU 模式下约每分钟视频需要 2-3 分钟处理时间
 - 如果中途失败，已生成的 `clip.json` 可跳过重新转录，直接从步骤 4c 继续
-- Claude API 使用的是 `ANTHROPIC_AUTH_TOKEN` + `ANTHROPIC_BASE_URL`（已在 ~/.zshrc 中配置）
+- Claude API 需配置 `ANTHROPIC_API_KEY`（标准用法），或自定义 `ANTHROPIC_BASE_URL` 指向代理端点
 - ffmpeg 和 ffprobe 在 `/opt/homebrew/bin/`
 
 ## 已知问题与修复
