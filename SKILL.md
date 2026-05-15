@@ -28,17 +28,26 @@ license: Proprietary
 - 如果参数是文件夹，列出其中所有 `.mp4` 文件
 - 每个视频的输出目录即为视频文件所在的文件夹
 
-### 第二步：检查是否已有输出
+### 第二步：询问行业/领域背景
+
+询问用户：
+
+> 这批视频属于哪个行业或领域？如果有明确的专业背景（例如："游戏开发"、"医疗影像"、"金融合规"），可以帮助更准确地纠正语音识别中的专有名词和术语。如果没有特定背景，跳过即可。
+
+- 若用户提供了背景描述（如"游戏引擎开发，涉及 UE5、Unreal、Niagara 等术语"），记录为 `DOMAIN_CONTEXT`，在步骤 4e 中通过环境变量传入
+- 若用户跳过，`DOMAIN_CONTEXT` 为空，generate_markdown.py 仅凭 info.json 中的课程标题做上下文
+
+### 第三步：检查是否已有输出
 
 对每个视频，检查同级目录下的 `transcript.md` 是否已存在：
 - 若已存在，**询问用户**是否跳过或重新生成
 - 若不存在，直接加入处理队列
 
-### 第三步：给出时间估算
+### 第四步：给出时间估算
 
 根据视频时长估算处理时间（每 10 分钟视频约需 2-3 分钟），告知用户总估时，等待确认后再开始。
 
-### 第四步：逐个处理
+### 第五步：逐个处理
 
 对每个视频依次执行（Python：`/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/bin/python3`，ffmpeg/ffprobe：`/opt/homebrew/bin/`）：
 
@@ -151,6 +160,7 @@ TRANSCRIPT_JSON=<video_dir>/clip.json \
 SCENE_LOG=<video_dir>/scene_log.txt \
 SLIDES_DIR=<video_dir>/slides \
 OUTPUT_MD=<video_dir>/transcript.md \
+VIDEO_DOMAIN_CONTEXT="<DOMAIN_CONTEXT 或留空>" \
 python3 generate_markdown.py
 ```
 
@@ -161,7 +171,7 @@ python3 generate_markdown.py
 - **图片结构**：每个语义段落的所有幻灯片统一展示在文字下方，不插入文字中间
 - **讲师识别**：从自我介绍中提取项目组/岗位，写在文档顶部；检测到多位讲师时自动标注
 
-### 第五步：完成汇报
+### 第六步：完成汇报
 
 全部处理完后，列出每个视频的处理结果：
 - ✅ 成功：输出路径 + 分段数量 + 是否识别到讲师身份
